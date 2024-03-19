@@ -9,6 +9,7 @@ TagManager:
   - WorldUI
   - MissionPhoto
   - Spawnpoint
+  - Computer
   layers:
   - Default
   - TransparentFX
