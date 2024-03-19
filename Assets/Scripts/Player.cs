@@ -44,7 +44,12 @@ public class Player : StateMachine<PlayerStates>
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
 
+    [Header("State")]
     public bool canMove = true;
+    public bool inComputer = false;
+
+    [Header("Computer")]
+    public Computer computer;
 
     [Header("HUD/UI")]
     public Canvas playerHUD;
@@ -61,6 +66,10 @@ public class Player : StateMachine<PlayerStates>
 
     void Awake()
     {
+        // Check for a computer
+        GameObject computerGameobject = GameObject.Find("Computer");
+        if (computerGameobject) computer = computerGameobject.GetComponent<Computer>();
+
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
@@ -69,10 +78,9 @@ public class Player : StateMachine<PlayerStates>
     {
         // Check for a spawnpoint
         GameObject spawnpoint = GameObject.FindWithTag("Spawnpoint");
-        if (spawnpoint)
-        {
-            transform.position = spawnpoint.transform.position;
-        }
+        if (spawnpoint) transform.position = spawnpoint.transform.position;
+
+        
     }
 
     void Start()
@@ -90,14 +98,29 @@ public class Player : StateMachine<PlayerStates>
 
     public void Update()
     {
-        // Hide the mouse
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
-
         HandleMovement();
         HandleRaycast();
         HandleUpdateHotbar();
         CheckForMouseClick();
+
+        if (inComputer && computer)
+        {
+            // Check for if the ui is closed
+            if (!computer.isOpen) HandleCloseComputer();
+        }
+    }
+
+    private void HandleOpenComputer()
+    {
+        canMove = false;
+        inComputer = true;
+        computer.open();
+    }
+
+    private void HandleCloseComputer()
+    {
+        canMove = true;
+        inComputer = false;
     }
 
     private void HandleUpdateHotbar()
@@ -231,6 +254,10 @@ public class Player : StateMachine<PlayerStates>
                 case ("MissionPhoto"):
                     interactTooltip.text = "Select Mission";
                     if (Input.GetKeyDown(KeyCode.E)) HandleMissionSelect(hit.transform.parent.gameObject.GetComponentInChildren<TMP_Text>().text);
+                    break;
+                case ("Computer"):
+                    interactTooltip.text = "Open Command Line";
+                    if (Input.GetKeyDown(KeyCode.E)) HandleOpenComputer();
                     break;
                 default:
                     interactTooltip.text = "";
