@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fc52e593b310ed49947681d0eb72357, type: 3}
+  m_Name: Flashlight
+  m_EditorClassIdentifier: 
+  type: 1
+  id: 
+  itemName: Flashlight
+  description: 
+  image: {fileID: 21300000, guid: 8ceab77c2bae1cb4fa6d58286cb9a491, type: 3}
+  prefab: {fileID: 7204062627746228343, guid: c251c22fc2b24c54d97b4ad82f6297e8, type: 3}
+  stackable: 0
+  maxBattery: 100

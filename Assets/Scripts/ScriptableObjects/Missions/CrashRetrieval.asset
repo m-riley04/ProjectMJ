@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20105ac2acdb48f42b6eb8225904d6a2, type: 3}
+  m_Name: CrashRetrieval
+  m_EditorClassIdentifier: 
+  scene: Farmhouse
+  name: Farmhouse
+  difficulty: 1
+  weather: 0
+  crashCause: 0
+  artifactCount: 3
+  entityRace: 0
+  entityCount: 1
