@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-public class Computer : MonoBehaviour
+
+public class Computer : MonoBehaviour, IInteractable
 {
     [Header("UI Elements")]
     public Canvas canvas;
@@ -12,6 +14,7 @@ public class Computer : MonoBehaviour
     public ScrollView scrollView;
     public TextMeshProUGUI uiInputText;
     public TextMeshProUGUI uiOutputText;
+    public Player player;
 
     List<string> commands = new List<string>
     {
@@ -25,14 +28,27 @@ public class Computer : MonoBehaviour
 
     public bool isOpen = false;
 
-    private void Awake()
+    private void Start()
     {
         close();
+        SceneManager.sceneLoaded += OnLoadCallback;
+    }
+
+    void OnLoadCallback(Scene scene, LoadSceneMode sceneMode)
+    {
+
+        player = GameObject.FindWithTag("Player").GetComponent<Player>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        // Try to get player
+        if (!player)
+        {
+            player = GameObject.FindWithTag("Player").GetComponent<Player>();
+        }
+
         if (isOpen)
         {
             // Get the user input
@@ -45,9 +61,20 @@ public class Computer : MonoBehaviour
 
     }
 
+    public void Interact()
+    {
+        open();
+    }
+
     public void open()
     {
+        print("Computer opened");
         isOpen = true;
+        if (player)
+        {
+            player.canMove = false;
+            player.inUi = true;
+        }
         currentOutputText = "Type 'help' to see a list of commands. \n";
         currentInputText = "";
         canvasObject.SetActive(true);
@@ -56,6 +83,11 @@ public class Computer : MonoBehaviour
     public void close()
     {
         isOpen = false;
+        if (player)
+        {
+            player.canMove = true;
+            player.inUi = false;
+        }
         canvasObject.SetActive(false);
     }
 
