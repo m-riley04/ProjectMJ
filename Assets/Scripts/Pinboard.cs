@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using TMPro.EditorUtilities;
+using Unity.VisualScripting;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,40 +14,50 @@ public class Pinboard : MonoBehaviour
     public List<string> missions;
     public GameObject picturePrefab;
 
+    float minWidth = 0.25f;
+    float minHeight = 0.25f;
+    float maxWidth = 2.5f;
+    float maxHeight = 2.5f;
+    float depth = -0.05f;
+
     // Start is called before the first frame update
     void Start()
     {
-
-        
         // Populate the corkboard with map buttons
         for (int i = 0; i < missions.Count; i++)
         {
+            // Create the photo and populate data
             GameObject photo = Instantiate(picturePrefab);
-            photo.transform.SetParent(transform, false);
-            photo.transform.position = transform.position + new Vector3(0f, 2 + (-0.6f * i), -0.05f);
             photo.GetComponentInChildren<TextMeshProUGUI>().text = missions[i];
-            /*
-            string sceneName = missions[i];
-            GameObject button = Instantiate<GameObject>(buttonPrefab);
-            Vector3 pos = ui.transform.position + new Vector3(0, -0.25f * i, 0);
-            button.transform.SetParent(ui.transform.gameObject.transform, false);
-            button.transform.position = pos;
-            button.transform.localScale = new Vector3(1, 1, 1);
-            button.GetComponentInChildren<TextMeshProUGUI>().text = sceneName;
-            button.GetComponent<Button>().onClick.AddListener(() => HandleMissionButtonClicked(sceneName));
-            */
+
+            // Randomize position
+            float xPos = Random.Range(minWidth, maxWidth);
+            float yPos = Random.Range(minHeight, maxHeight);
+            Vector3 pos = new Vector3(xPos, yPos, depth);
+
+            // Set the position
+            photo.transform.SetParent(transform, false);
+            photo.transform.position = transform.position + pos;
+
+            // Check for other collisions
+            int maxChecks = 5;
+            for (int j = 0; j < maxChecks; j++)
+            {
+                if (photo.GetComponentInChildren<PinboardPhoto>().colliding)
+                {
+                    // Randomize position
+                    xPos = Random.Range(minWidth, maxWidth);
+                    yPos = Random.Range(minHeight, maxHeight);
+                    pos = new Vector3(xPos, yPos, depth);
+
+                    // Set the position
+                    photo.transform.SetParent(transform, false);
+                    photo.transform.position = transform.position + pos;
+                }
+                else break;
+            }
+
         }
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void HandleMissionButtonClicked(string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
     }
 }
