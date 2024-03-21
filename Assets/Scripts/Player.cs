@@ -46,10 +46,7 @@ public class Player : StateMachine<PlayerStates>
 
     [Header("State")]
     public bool canMove = true;
-    public bool inComputer = false;
-
-    [Header("Computer")]
-    public Computer computer;
+    public bool inUi = false;
 
     [Header("HUD/UI")]
     public Canvas playerHUD;
@@ -66,11 +63,6 @@ public class Player : StateMachine<PlayerStates>
 
     void Awake()
     {
-        // Check for a computer
-        GameObject computerGameobject = GameObject.Find("Computer");
-        if (computerGameobject) computer = computerGameobject.GetComponent<Computer>();
-
-        DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -79,8 +71,6 @@ public class Player : StateMachine<PlayerStates>
         // Check for a spawnpoint
         GameObject spawnpoint = GameObject.FindWithTag("Spawnpoint");
         if (spawnpoint) transform.position = spawnpoint.transform.position;
-
-        
     }
 
     void Start()
@@ -102,25 +92,6 @@ public class Player : StateMachine<PlayerStates>
         HandleRaycast();
         HandleUpdateHotbar();
         CheckForMouseClick();
-
-        if (inComputer && computer)
-        {
-            // Check for if the ui is closed
-            if (!computer.isOpen) HandleCloseComputer();
-        }
-    }
-
-    private void HandleOpenComputer()
-    {
-        canMove = false;
-        inComputer = true;
-        computer.open();
-    }
-
-    private void HandleCloseComputer()
-    {
-        canMove = true;
-        inComputer = false;
     }
 
     private void HandleUpdateHotbar()
@@ -238,7 +209,7 @@ public class Player : StateMachine<PlayerStates>
         interactTooltip.text = "";
 
         // Check if the raycast hit anything
-        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, reach)) {
+        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out hit, reach) && !inUi) {
 
             // Change tooltip text
             switch (hit.transform.gameObject.tag)
@@ -249,7 +220,7 @@ public class Player : StateMachine<PlayerStates>
                     break;
                 case ("Interactable"):
                     interactTooltip.text = "Interact";
-                    if (Input.GetKeyDown(KeyCode.E)) HandleInteract(hit.transform.parent.GetComponentInChildren<Interactable>());
+                    if (Input.GetKeyDown(KeyCode.E)) HandleInteract(hit.transform.parent.GetComponentInChildren<IInteractable>());
                     break;
                 case ("MissionPhoto"):
                     interactTooltip.text = "Select Mission";
@@ -257,7 +228,10 @@ public class Player : StateMachine<PlayerStates>
                     break;
                 case ("Computer"):
                     interactTooltip.text = "Open Command Line";
-                    if (Input.GetKeyDown(KeyCode.E)) HandleOpenComputer();
+                    if (Input.GetKeyDown(KeyCode.E))
+                    {
+                        hit.transform.parent.GetComponent<IInteractable>()?.Interact();
+                    }
                     break;
                 default:
                     interactTooltip.text = "";
@@ -296,12 +270,9 @@ public class Player : StateMachine<PlayerStates>
         }
     }
 
-    private void HandleInteract(Interactable interactable)
+    private void HandleInteract(IInteractable interactable)
     {
-        if (interactable)
-        {
-            interactable.OnInteract();
-        }
+        if (interactable != null) interactable.Interact();
     }
 
     private void HandleMissionSelect(string missionName)
