@@ -484,7 +484,7 @@ GameObject:
   - component: {fileID: 788670059476899186}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -578,6 +578,7 @@ MonoBehaviour:
   lookXLimit: 45
   reach: 5
   canMove: 1
+  inUi: 0
   playerHUD: {fileID: 7138456447136530703}
   playerHotbar: {fileID: 6000179829996460983}
   interactTooltip: {fileID: 3128066585936411765}
