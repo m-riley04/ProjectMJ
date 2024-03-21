@@ -4,13 +4,6 @@ using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum GameStates
-{
-    MainMenu,
-    Lobby,
-    Mission
-}
-
 public class GameController : MonoBehaviour
 {
     public Mission currentMission;
