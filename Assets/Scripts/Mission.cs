@@ -7,7 +7,6 @@ public class Mission : MonoBehaviour
 {
     public MissionObject mission;
     public Terrain terrain;
-    public TerrainData backupTerrain;
     public RenderTexture backupTexture;
     public GameObject crashPrefab;
     public GameController gameController;
@@ -17,7 +16,6 @@ public class Mission : MonoBehaviour
     {
         // Get the terrain
         if (!terrain) terrain = FindFirstObjectByType<Terrain>();
-        if (terrain) backupTerrain = terrain.terrainData;
 
         // Get the game controller
         gameController = FindFirstObjectByType<GameController>();
