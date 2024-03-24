@@ -55,6 +55,7 @@ public class Player : StateMachine<PlayerStates>
     public Canvas playerHotbar;
     public TMP_Text interactTooltip;
     private Image[] hotbarImages;
+    public ReportMenu report;
 
     [Header("Inventory")]
     public InventoryObject inventory;
@@ -95,9 +96,19 @@ public class Player : StateMachine<PlayerStates>
     public void Update()
     {
         HandleMovement();
+        HandleCheckInput();
         HandleRaycast();
         HandleUpdateHotbar();
         CheckForMouseClick();
+    }
+
+    private void HandleCheckInput()
+    {
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            report.gameObject.SetActive(!report.gameObject.active);
+        }
+    }
     }
 
     private void HandleUpdateHotbar()
