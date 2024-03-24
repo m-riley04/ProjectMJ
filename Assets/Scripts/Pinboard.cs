@@ -36,7 +36,7 @@ public class Pinboard : MonoBehaviour
         {
             // Create the photo and populate data
             GameObject photo = Instantiate(picturePrefab);
-            photo.GetComponentInChildren<TextMeshProUGUI>().text = missions[i];
+            photo.GetComponentInChildren<PinboardPhoto>().mission = missions[i];
 
             // Randomize position
             float xPos = Random.Range(minWidth, maxWidth);
