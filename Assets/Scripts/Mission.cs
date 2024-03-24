@@ -1,47 +1,90 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Mission : MonoBehaviour
 {
     public MissionObject mission;
     public Terrain terrain;
-    public TerrainData terrainDataBackup;
+    public TerrainData backupTerrain;
+    public RenderTexture backupTexture;
     public GameObject crashPrefab;
+    public GameController gameController;
+    public Vector3 crashPosition;
 
     void Start()
     {
-        // Get the mission
-        //mission = FindFirstObjectByType<GameController>().currentMission.mission
-
         // Get the terrain
         if (!terrain) terrain = FindFirstObjectByType<Terrain>();
-        terrainDataBackup = terrain.terrainData;
-        Vector3 terrainSize = terrain.terrainData.size;
+        if (terrain) backupTerrain = terrain.terrainData;
+
+        // Get the game controller
+        gameController = FindFirstObjectByType<GameController>();
+
+        // Get the mission
+        if (gameController) mission = gameController.currentMission;
+
+        // Place the crash site
+        if (mission && terrain) PlaceCrashSite(terrain.terrainData); else print("Unable to place crash site.");
+        
+    }
+
+    private void Update()
+    {
+        if (!gameController)
+        {
+            // Find the game controller
+            gameController = FindObjectOfType<GameController>();
+
+            // If it's found...
+            if (gameController)
+            {
+                // Set the mission
+                mission = gameController.currentMission;
+
+                // Place the crash site
+                if (mission && terrain) PlaceCrashSite(terrain.terrainData);
+            }
+        }
+    }
+
+    public void PlaceCrashSite(TerrainData terrainData)
+    {
+        // Get the bounds
+        Vector3 terrainSize = terrainData.size;
 
         // Set the crash location
-        Random.seed = 0;
-        int xPos = (int)Mathf.Round(Random.Range(0, terrainSize.x));
+        float xPos = Mathf.Round(Random.Range(0, terrainSize.x));
         float yPos = 5.57f;
-        int zPos = (int)Mathf.Round(Random.Range(0, terrainSize.z));
+        float zPos = Mathf.Round(Random.Range(0, terrainSize.z));
         Vector3 pos = new Vector3(xPos, yPos, zPos);
+        crashPosition = pos; // Set the crash position
+        print("Crash Position: " + pos);
 
         // Create crash location
         GameObject crashSite = Instantiate(crashPrefab, transform, false);
         crashSite.transform.position = pos;
 
-        // Create hole at crash location
+        // Create dynamic holes
         int holeWidth = 40;
         int holeHeight = 40;
-        int offSetZ = holeWidth/2;
-        int offSetX = holeHeight/2;
+        CreateDynamicHoles(xPos, zPos, holeWidth, holeHeight);
 
-        var b = new bool[holeWidth, holeHeight];
+    }
+
+    public void CreateDynamicHoles(float xPos, float zPos, int width, int height)
+    {
+        // Create hole at crash location
+        int offSetZ = width / 2;
+        int offSetX = height / 2;
+
+        var b = new bool[width, height];
 
         Vector2 originOfCircle = new Vector2(offSetX, offSetZ);
-        for (var x = 0; x < holeWidth; x++)
+        for (var x = 0; x < width; x++)
         {
-            for (var y = 0; y < holeHeight; y++)
+            for (var y = 0; y < height; y++)
             {
                 //b[x, y] = false;
                 if (Vector2.Distance(new Vector2(x, y), originOfCircle) < offSetX)
@@ -55,10 +98,30 @@ public class Mission : MonoBehaviour
             }
         }
 
+        terrain.terrainData.SetHoles((int)xPos, (int)zPos, b);
+    }
 
-        terrain.terrainData.SetHoles(xPos, zPos, b);
+    public void RemoveDynamicHoles(TerrainData terrainData, float xPos, float zPos, int width, int height)
+    {
+        var b = new bool[width, height];
 
-        print("Position of Hole Start: " + xPos + ", " + zPos);
-        print("Position of Crash Origin: " + pos);
+        // Iterate through every hole position
+        for (var x = 0; x < width; x++)
+        {
+            for (var y = 0; y < height; y++)
+            {
+                // Set it to true
+                b[x, y] = true;
+            }
+        }
+
+        // Set the hole values
+        terrainData.SetHoles((int)xPos, (int)zPos, b);
+    }
+
+    private void OnApplicationQuit()
+    {
+        // Fill the holes from the crash site
+        RemoveDynamicHoles(terrain.terrainData, crashPosition.x, crashPosition.z, 40, 40);
     }
 }
