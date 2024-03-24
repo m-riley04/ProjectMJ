@@ -317,6 +317,10 @@ public class Player : StateMachine<PlayerStates>
             case ("Flashlight"):
                 heldItemObject.GetComponent<Item>().OnFlashlightToggle();
                 break;
+
+            case ("Camera"):
+                heldItemObject.GetComponent<Item>().OnCameraCapture();
+                break;
         }
     }
 
