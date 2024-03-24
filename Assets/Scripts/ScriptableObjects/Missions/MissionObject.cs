@@ -1,13 +1,7 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public enum MissionType
-{
-    CrashRetrieval,
-    EntityContainment,
-    Landing
-}
 
 public enum CrashCause
 {
@@ -25,7 +19,8 @@ public enum Weather
     Rain,
     Thunderstorm,
     Foggy,
-
+    MeteorShower,
+    Other
 }
 
 public enum Difficulty
@@ -33,22 +28,25 @@ public enum Difficulty
     Easy,
     Medium,
     Hard,
-    TopSecret
+    TopSecret,
+    Other
 }
 
-public enum EntityRace
+public enum CraftType
 {
     None,
-    Greys,
-    Light,
-    Europan
+    Saucer,
+    TicTac,
+    Cigar,
+    Sphere,
+    Other
 }
 
 [CreateAssetMenu(fileName = "New Mission", menuName = "Missions/Mission")]
 public class MissionObject : ScriptableObject
 {
     public string scene;
-    public new string name;
+    [TextArea()] public string description;
     public Difficulty difficulty;
 
     [Header("World")]
@@ -57,8 +55,6 @@ public class MissionObject : ScriptableObject
     [Header("Crash Site")]
     public CrashCause crashCause;
     public int artifactCount;
+    public CraftType craftType;
 
-    [Header("Entities")]
-    public EntityRace entityRace;
-    public int entityCount;
 }
