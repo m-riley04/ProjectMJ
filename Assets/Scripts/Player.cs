@@ -100,6 +100,7 @@ public class Player : StateMachine<PlayerStates>
         HandleRaycast();
         HandleUpdateHotbar();
         CheckForMouseClick();
+        CheckIfFellThrough();
     }
 
     private void HandleCheckInput()
@@ -109,6 +110,16 @@ public class Player : StateMachine<PlayerStates>
             report.gameObject.SetActive(!report.gameObject.active);
         }
     }
+
+    private void CheckIfFellThrough()
+    {
+        if (transform.position.y < 0)
+        {
+            // Find the spawnpoint
+            PlayerSpawnpoint spawnpoint = FindObjectOfType<PlayerSpawnpoint>();
+            if (spawnpoint) transform.position = spawnpoint.transform.position + new Vector3(0, 2f, 0);
+            else transform.position = new Vector3(transform.position.x, 300, transform.position.z);
+        }
     }
 
     private void HandleUpdateHotbar()
