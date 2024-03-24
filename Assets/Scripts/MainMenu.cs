@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public interface ContractSettings
 {
@@ -12,19 +15,14 @@ public interface ContractSettings
 
 }
 
-public class MainMenu : MonoBehaviour
+public class MainMenu : Menu
 {
-    void NavigateToNextPage()
+    public void StartNewGame()
     {
-
+        SceneManager.LoadScene("Lobby");
     }
 
-    void StartNewGame(ContractSettings settings)
-    {
-
-    }
-
-    void QuitGame()
+    public void QuitGame()
     {
         Application.Quit();
     }
