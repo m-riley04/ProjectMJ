@@ -152,11 +152,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2401e581cf15dd5459359269e7c4d8d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  missions:
+  availableMissionCount: 5
+  missions: []
+  availableScenes:
   - Farmhouse
-  - Ocean
-  - SmallTown
-  - Forest
   picturePrefab: {fileID: 1277578420230787692, guid: d06083f5beb0ac04885bea0a6df9ec7b, type: 3}
 --- !u!1001 &2405772889972870622
 PrefabInstance:
