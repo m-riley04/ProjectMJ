@@ -1,20 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PinboardPhoto : MonoBehaviour
 {
-    public bool colliding = true;
+    public MissionObject mission;
+    public bool colliding = false;
 
-    private void OnCollisionEnter(Collision collision)
+    private void Start()
     {
-        print("Collided!");
-        colliding = true;
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        print("Stopped collided!");
-        colliding = false;
+        // Set the photo name
+        if (mission) GetComponentInChildren<TextMeshProUGUI>().text = mission.scene;
     }
 }
