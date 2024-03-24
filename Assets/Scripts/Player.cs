@@ -19,6 +19,8 @@ public enum PlayerStates
 [RequireComponent(typeof(CharacterController))]
 public class Player : StateMachine<PlayerStates>
 {
+    public GameController gameController;
+
     [Header("Player Stats")]
     public int maxHealth;
     private int health;
@@ -63,6 +65,10 @@ public class Player : StateMachine<PlayerStates>
 
     void Awake()
     {
+        // Find the gamecontroller
+        gameController = FindObjectOfType<GameController>();
+
+        // Add OnSceneLoaded
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
