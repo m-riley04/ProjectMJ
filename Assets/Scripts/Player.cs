@@ -252,7 +252,7 @@ public class Player : StateMachine<PlayerStates>
                     break;
                 case ("MissionPhoto"):
                     interactTooltip.text = "Select Mission";
-                    if (Input.GetKeyDown(KeyCode.E)) HandleMissionSelect(hit.transform.parent.gameObject.GetComponentInChildren<TMP_Text>().text);
+                    if (Input.GetKeyDown(KeyCode.E)) HandleMissionSelect(hit.transform.parent.gameObject.GetComponentInChildren<PinboardPhoto>().mission);
                     break;
                 case ("Computer"):
                     interactTooltip.text = "Open Command Line";
@@ -303,9 +303,10 @@ public class Player : StateMachine<PlayerStates>
         if (interactable != null) interactable.Interact();
     }
 
-    private void HandleMissionSelect(string missionName)
+    private void HandleMissionSelect(MissionObject mission)
     {
-        SceneManager.LoadScene(missionName);
+        gameController.currentMission = mission;
+        SceneManager.LoadScene(mission.scene);
     }
 
     private void HandleItemInteraction(ItemObject item)
