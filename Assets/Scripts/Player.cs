@@ -328,11 +328,15 @@ public class Player : StateMachine<PlayerStates>
     {
         if (Input.GetMouseButtonDown(((int)MouseButton.Left)))
         {
-            
-            if (hotbar.Container[currentHotbarIndex] != null)
+            try
             {
-                print("Used item");
-                HandleItemInteraction(hotbar.Container[currentHotbarIndex].item);
+                if (hotbar.Container[currentHotbarIndex] != null)
+                {
+                    print("Used item");
+                    HandleItemInteraction(hotbar.Container[currentHotbarIndex].item);
+                }
+            } catch (ArgumentOutOfRangeException ex) {
+                //print("No item in that slot");
             }
         }
     }
