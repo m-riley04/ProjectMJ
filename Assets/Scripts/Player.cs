@@ -7,6 +7,7 @@ using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public enum PlayerStates
 {
@@ -55,19 +56,32 @@ public class Player : StateMachine<PlayerStates>
     public Canvas playerHotbar;
     public TMP_Text interactTooltip;
     private Image[] hotbarImages;
+    public TextMeshProUGUI xPosUi;
+    public TextMeshProUGUI yPosUi;
     public ReportMenu report;
 
     [Header("Inventory")]
     public InventoryObject inventory;
-    public HotbarObject hotbar;
-    public int currentHotbarIndex;
+    public int hotbarSize = 4;
+    public int currentHotbarIndex = 0;
     private GameObject heldItemObject;
     public GameObject playerHand;
 
-    void Awake()
+    void Start()
     {
         // Find the gamecontroller
         gameController = FindObjectOfType<GameController>();
+
+        // Get the character controller if not defined
+        characterController = GetComponent<CharacterController>();
+
+        // Hide the mouse
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        // Get hotbar images
+        hotbarImages = playerHotbar.GetComponentsInChildren<Image>();
+        if (hotbarImages.Length > 0) hotbarSize = hotbarImages.Length;
 
         // Add OnSceneLoaded
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -80,19 +94,6 @@ public class Player : StateMachine<PlayerStates>
         if (spawnpoint) transform.position = spawnpoint.transform.position;
     }
 
-    void Start()
-    {
-        // Get the character controller if not defined
-        characterController = GetComponent<CharacterController>();
-
-        // Hide the mouse
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        // Get hotbar images
-        hotbarImages = playerHotbar.GetComponentsInChildren<Image>();
-    }
-
     public void Update()
     {
         HandleMovement();
@@ -101,6 +102,10 @@ public class Player : StateMachine<PlayerStates>
         HandleUpdateHotbar();
         CheckForMouseClick();
         CheckIfFellThrough();
+
+        // Get current position
+        xPosUi.text = transform.position.x.ToString();
+        yPosUi.text = transform.position.z.ToString();
     }
 
     private void HandleCheckInput()
@@ -108,6 +113,19 @@ public class Player : StateMachine<PlayerStates>
         if (Input.GetKeyDown(KeyCode.J))
         {
             report.gameObject.SetActive(!report.gameObject.active);
+        }
+
+        // Testing saving and loading
+        string path = Application.dataPath + "/SaveFiles/" + gameController.contract.name + "/contract.json";
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            SaveLoadSystem.Save(gameController.contract, path);
+            print("Saved.");
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            //SaveLoadSystem.Load(path);
+            print("Loaded.");
         }
     }
 
@@ -131,20 +149,20 @@ public class Player : StateMachine<PlayerStates>
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f) currentHotbarIndex += 1;
 
         // Check bounds of hotbar
-        if (currentHotbarIndex >= hotbar.maxSize) currentHotbarIndex = hotbar.maxSize - 1;
-        else if (currentHotbarIndex < 0) currentHotbarIndex = 0;
+        if (currentHotbarIndex >= hotbarSize) currentHotbarIndex = hotbarSize - 1;
+        else if (currentHotbarIndex <= 0) currentHotbarIndex = 0;
 
         // Update the object at the player
         HandleHeldItem(previousHotbarIndex, currentHotbarIndex);
 
         // Reset colors of the current hotbar slots
-        for (int i = 0; i < hotbar.maxSize; i++)
+        for (int i = 0; i < hotbarSize; i++)
         {
             hotbarImages[i].color = Color.white;
 
             try
             {
-                hotbarImages[i].sprite = hotbar.Container[i].item.image;
+                hotbarImages[i].sprite = inventory.Container[i].item.image;
             }
             catch { }
         }
@@ -161,7 +179,7 @@ public class Player : StateMachine<PlayerStates>
             if (previousIndex != currentIndex)
             {
                 // Get the currently held item
-                ItemObject heldItem = hotbar.Container[currentIndex].item;
+                ItemObject heldItem = inventory.Container[currentIndex].item;
 
                 // Destroy the current game object
                 Destroy(heldItemObject);
@@ -172,8 +190,7 @@ public class Player : StateMachine<PlayerStates>
 
             }
             // Update the rotation and positioning of the object
-            heldItemObject.transform.position = playerHand.transform.position;
-            heldItemObject.transform.rotation = playerCamera.transform.rotation;
+            heldItemObject.transform.SetPositionAndRotation(playerHand.transform.position, playerCamera.transform.rotation);
 
         }
         catch (Exception e)
@@ -272,24 +289,15 @@ public class Player : StateMachine<PlayerStates>
     {
         if (item)
         {
-            // Attempt to add it to the hotbar
+            // Attempt to add it to the inventory/hotbar
             try
             {
-                hotbar.AddItem(item.item, 1);
+                inventory.AddItem(item.item, 1);
                 Destroy(item.gameObject);
             }
-            catch (OverflowException e)
+            catch (OverflowException ex)
             {
-                // Attempt to add it to the inventory
-                try
-                {
-                    inventory.AddItem(item.item, 1);
-                    Destroy(item.gameObject);
-                }
-                catch (OverflowException ex)
-                {
-                    // Inventory is full
-                }
+                // Inventory is full
             }
 
         } else
@@ -303,9 +311,9 @@ public class Player : StateMachine<PlayerStates>
         if (interactable != null) interactable.Interact();
     }
 
-    private void HandleMissionSelect(MissionObject mission)
+    private void HandleMissionSelect(MissionData mission)
     {
-        gameController.currentMission = mission;
+        gameController.mission = mission;
         SceneManager.LoadScene(mission.scene);
     }
 
@@ -321,6 +329,11 @@ public class Player : StateMachine<PlayerStates>
             case ("Camera"):
                 heldItemObject.GetComponent<Item>().OnCameraCapture();
                 break;
+
+            case ("Compass"):
+                xPosUi.transform.parent.gameObject.SetActive(!xPosUi.transform.parent.gameObject.active);
+                yPosUi.transform.parent.gameObject.SetActive(!yPosUi.transform.parent.gameObject.active);
+                break;
         }
     }
 
@@ -330,10 +343,10 @@ public class Player : StateMachine<PlayerStates>
         {
             try
             {
-                if (hotbar.Container[currentHotbarIndex] != null)
+                if (inventory.Container[currentHotbarIndex] != null)
                 {
+                    HandleItemInteraction(inventory.Container[currentHotbarIndex].item);
                     print("Used item");
-                    HandleItemInteraction(hotbar.Container[currentHotbarIndex].item);
                 }
             } catch (ArgumentOutOfRangeException ex) {
                 //print("No item in that slot");
@@ -343,7 +356,6 @@ public class Player : StateMachine<PlayerStates>
 
     public void OnApplicationQuit()
     {
-        hotbar.Container.Clear();
         inventory.Container.Clear();
     }
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class PinboardPhoto : MonoBehaviour
 {
-    public MissionObject mission;
+    public MissionData mission;
     public bool colliding = false;
 
     private void Start()
     {
         // Set the photo name
-        if (mission) GetComponentInChildren<TextMeshProUGUI>().text = mission.scene;
+        if (mission != null) GetComponentInChildren<TextMeshProUGUI>().text = mission.scene;
     }
 }

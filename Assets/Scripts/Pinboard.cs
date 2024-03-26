@@ -12,7 +12,7 @@ using static UnityEditor.PlayerSettings;
 public class Pinboard : MonoBehaviour
 {
     public int availableMissionCount = 5;
-    public List<MissionObject> missions;
+    public List<MissionData> missions;
     public List<string> availableScenes = new List<string>();
     public GameObject picturePrefab;
 
@@ -68,11 +68,8 @@ public class Pinboard : MonoBehaviour
         }
 
     }
-    public MissionObject GenerateRandomMission()
+    public MissionData GenerateRandomMission()
     {
-        // Create a new mission object
-        MissionObject mission = new MissionObject();
-
         // Randomize each of the crash elements
         int sceneIndex = (int)Mathf.Round(Random.Range(0, availableScenes.Count - 1));
         string scene = availableScenes[sceneIndex];
@@ -83,8 +80,8 @@ public class Pinboard : MonoBehaviour
         CrashCause crashCause = (CrashCause)Mathf.Round(Random.Range((int)CrashCause.None, (int)CrashCause.Other));
         int artifactCount = (int)Mathf.Round(Random.Range(1, 4));
 
-        // Initialize the mission
-        mission.Init(scene, description, difficulty, weather, craftType, crashCause, artifactCount);
+        // Create a new mission object
+        MissionData mission = new MissionData(scene, description, (int)difficulty, (int)weather, (int)crashCause, artifactCount, (int)craftType);
 
         // Return it
         return mission;
