@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 188cbeee8e696f849be29efb29bf5063, type: 3}
-  m_Name: ScrapMetal
+  m_Name: Scrap Metal
   m_EditorClassIdentifier: 
   type: 0
   id: 

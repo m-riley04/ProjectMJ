@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3448749b65dafc14e806164b03807813, type: 3}
+  m_Name: Report Folder
+  m_EditorClassIdentifier: 
+  type: 0
+  id: ReportFolder
+  itemName: Report Folder
+  description: 
+  image: {fileID: 21300000, guid: f168ed1d1a19da448b0c21ac1bd4a6b8, type: 3}
+  prefab: {fileID: 3918343205770428677, guid: 1618a257a07514449a83aad86f7f155e, type: 3}
+  stackable: 0
