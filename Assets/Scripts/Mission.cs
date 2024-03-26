@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Mission : MonoBehaviour
 {
-    public MissionObject mission;
+    public MissionData mission;
     public Terrain terrain;
     public RenderTexture backupTexture;
     public GameObject crashPrefab;
@@ -21,10 +21,10 @@ public class Mission : MonoBehaviour
         gameController = FindFirstObjectByType<GameController>();
 
         // Get the mission
-        if (gameController) mission = gameController.currentMission;
+        if (gameController) mission = gameController.mission;
 
         // Place the crash site
-        if (mission && terrain) PlaceCrashSite(terrain.terrainData); else print("Unable to place crash site.");
+        if (mission != null && terrain) PlaceCrashSite(terrain.terrainData); else print("Unable to place crash site.");
         
     }
 
@@ -39,10 +39,10 @@ public class Mission : MonoBehaviour
             if (gameController)
             {
                 // Set the mission
-                mission = gameController.currentMission;
+                mission = gameController.mission;
 
                 // Place the crash site
-                if (mission && terrain) PlaceCrashSite(terrain.terrainData);
+                if (mission != null && terrain) PlaceCrashSite(terrain.terrainData);
             }
         }
     }
