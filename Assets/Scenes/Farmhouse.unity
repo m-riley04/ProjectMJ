@@ -349,8 +349,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mission: {fileID: 11400000, guid: 12c19d87b7a2cd44c942d0246eb7f828, type: 2}
   terrain: {fileID: 356439886}
-  terrainDataBackup: {fileID: 0}
+  backupTexture: {fileID: 0}
   crashPrefab: {fileID: 2050233397426891317, guid: d5f7d5e584963de4ba3942435697d92d, type: 3}
+  gameController: {fileID: 0}
+  crashPosition: {x: 0, y: 0, z: 0}
 --- !u!4 &729320675
 Transform:
   m_ObjectHideFlags: 0
