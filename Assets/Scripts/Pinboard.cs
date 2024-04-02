@@ -25,10 +25,23 @@ public class Pinboard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Create new missions
-        for (int i = 0; i < availableMissionCount; i++)
+        // Check if there aren't any missions
+        if (GameController.contract.missions.Count <= 0)
         {
-            missions.Add(GenerateRandomMission());
+            // Generate new missions
+            for (int i = 0; i < availableMissionCount; i++)
+            {
+                MissionData data = GenerateRandomMission();
+
+                // Add it to missions
+                missions.Add(data);
+            }
+
+            // Set the contract's missions variable
+            GameController.contract.missions = missions;
+        } else
+        {
+            missions = GameController.contract.missions;
         }
 
         // Populate the corkboard with map buttons
@@ -47,27 +60,12 @@ public class Pinboard : MonoBehaviour
             photo.transform.SetParent(transform, false);
             photo.transform.position = transform.position + pos;
 
-            // Check for other collisions
-            int maxChecks = 5;
-            for (int j = 0; j < maxChecks; j++)
-            {
-                if (photo.GetComponentInChildren<PinboardPhoto>().colliding)
-                {
-                    // Randomize position
-                    xPos = Random.Range(minWidth, maxWidth);
-                    yPos = Random.Range(minHeight, maxHeight);
-                    pos = new Vector3(xPos, yPos, depth);
-
-                    // Set the position
-                    photo.transform.SetParent(transform, false);
-                    photo.transform.position = transform.position + pos;
-                }
-                else break;
-            }
+            // TODO: Check for collisions
 
         }
 
     }
+
     public MissionData GenerateRandomMission()
     {
         // Randomize each of the crash elements
