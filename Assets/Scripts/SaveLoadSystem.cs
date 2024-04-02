@@ -5,6 +5,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 
 public class SaveLoadSystem
 {
@@ -20,15 +22,13 @@ public class SaveLoadSystem
     {
 
         // Write json text
-        File.WriteAllText(path, Newtonsoft.Json.JsonConvert.SerializeObject(obj, new JsonSerializerSettings
-        {
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-        }));
+        File.WriteAllText(path, Newtonsoft.Json.JsonConvert.SerializeObject(obj));
     }
 
     public static T Load<T>(string path)
     {
         string json = File.ReadAllText(path);
+
         return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
     }
 
