@@ -25,6 +25,7 @@ public class PlayerSpawnpoint : MonoBehaviour
             GameObject player = Instantiate(playerPrefab, transform, false);
             player.transform.parent = null;
             DontDestroyOnLoad(player);
+            GameController.playerLoaded = true;
         }
     }
 }
