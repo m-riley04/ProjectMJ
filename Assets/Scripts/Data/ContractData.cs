@@ -34,6 +34,10 @@ public class ContractData
 
     public ContractData()
     {
-
+        missions    = new List<MissionData>();
+        storage     = new InventoryData();
+        host        = new PlayerData();
+        players     = new List<PlayerData>();
+        stats       = new ContractStatisticsData();
     }
 }
