@@ -21,7 +21,7 @@ public class Mission : MonoBehaviour
         gameController = FindFirstObjectByType<GameController>();
 
         // Get the mission
-        if (gameController) mission = gameController.mission;
+        if (gameController) mission = GameController.mission;
 
         // Place the crash site
         if (mission != null && terrain) PlaceCrashSite(terrain.terrainData); else print("Unable to place crash site.");
@@ -39,7 +39,7 @@ public class Mission : MonoBehaviour
             if (gameController)
             {
                 // Set the mission
-                mission = gameController.mission;
+                mission = GameController.mission;
 
                 // Place the crash site
                 if (mission != null && terrain) PlaceCrashSite(terrain.terrainData);
