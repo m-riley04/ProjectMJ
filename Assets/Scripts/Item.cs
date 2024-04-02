@@ -7,20 +7,38 @@ using System.IO;
 
 public class Item : MonoBehaviour
 {
-    public ItemObject item;
+    public ItemData item;
+    public ItemObject itemTemplate;
     public Light itemLight;
     public Camera itemCamera;
     public int FileCounter = 0;
 
+    [Header("Sounds")]
+    public AudioClip soundPickup;
+    public AudioClip soundDrop;
+    public AudioClip soundRun;
+    public AudioClip soundActivate;
+    public AudioClip soundDeactivate;
+
     public void Start()
     {
-        // Make the item a copy
-        item = Instantiate(item);
+        // Set the actual item data from the item template
+        item = new ItemData((int)itemTemplate.type, itemTemplate.id, itemTemplate.itemName, itemTemplate.description, itemTemplate.stackable, itemTemplate.sprite, itemTemplate.prefab);
 
         if (itemLight)
         {
             itemLight.enabled = false;
         }
+    }
+
+    public void OnPickup()
+    {
+        
+    }
+
+    public void OnDrop()
+    {
+
     }
 
     public void OnFlashlightToggle()
