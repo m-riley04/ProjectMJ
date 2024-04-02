@@ -61,11 +61,27 @@ public class Player : StateMachine<PlayerStates>
     public ReportMenu report;
 
     [Header("Inventory")]
-    public InventoryObject inventory;
+    public InventoryData inventory = new InventoryData();
     public int hotbarSize = 4;
     public int currentHotbarIndex = 0;
     private GameObject heldItemObject;
     public GameObject playerHand;
+
+    [Header("Keybinds")]
+    public KeyCode keyForward       = KeyCode.W;
+    public KeyCode keyBackwards     = KeyCode.S;
+    public KeyCode keyLeft          = KeyCode.A;
+    public KeyCode keyRight         = KeyCode.D;
+    public KeyCode keySprint        = KeyCode.LeftShift;
+    public KeyCode keyCrouch        = KeyCode.LeftControl;
+    public KeyCode keyDrop          = KeyCode.G;
+    public KeyCode keyInventory     = KeyCode.I;
+    public KeyCode keyJournal       = KeyCode.J;
+    public KeyCode keySave          = KeyCode.K;
+    public KeyCode keyLoad          = KeyCode.L;
+    public KeyCode keyUse           = KeyCode.E;
+    public int buttonShoot          = (int)MouseButton.Left;
+    public int buttonAim            = (int)MouseButton.Right;
 
     void Start()
     {
@@ -98,34 +114,45 @@ public class Player : StateMachine<PlayerStates>
     {
         HandleMovement();
         HandleCheckInput();
+        HandleCheckMouseInput();
         HandleRaycast();
-        HandleUpdateHotbar();
-        CheckForMouseClick();
+        HandleUpdateHUD();
+        
         CheckIfFellThrough();
-
-        // Get current position
-        xPosUi.text = transform.position.x.ToString();
-        yPosUi.text = transform.position.z.ToString();
     }
 
     private void HandleCheckInput()
     {
-        if (Input.GetKeyDown(KeyCode.J))
+        // Drop Held Item
+        if (Input.GetKeyDown(keyDrop))
+        {
+            // Get current item
+            ItemData currentItem = inventory.GetSlot(currentHotbarIndex).item;
+
+            // Create item on ground
+            GameObject itemObj = Instantiate(currentItem.prefab);
+            itemObj.transform.position = transform.position;
+
+            // Remove item from inventory
+            inventory.RemoveItemAt(currentHotbarIndex);
+        }
+
+        // Open Journal
+        if (Input.GetKeyDown(keyJournal))
         {
             report.gameObject.SetActive(!report.gameObject.active);
         }
 
         // Testing saving and loading
-        string path = Application.dataPath + "/SaveFiles/" + gameController.contract.name + "/contract.json";
-        if (Input.GetKeyDown(KeyCode.K))
+        string path = Application.dataPath + "/SaveFiles/" + GameController.contract.name;
+        if (Input.GetKeyDown(keySave))
         {
-            SaveLoadSystem.Save(gameController.contract, path);
-            print("Saved.");
+            gameController.Save();
         }
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(keyLoad))
         {
-            //SaveLoadSystem.Load(path);
-            print("Loaded.");
+            gameController.Load(path);
+            
         }
     }
 
@@ -140,8 +167,9 @@ public class Player : StateMachine<PlayerStates>
         }
     }
 
-    private void HandleUpdateHotbar()
+    private void HandleUpdateHUD()
     {
+        //========== Hotbar
         int previousHotbarIndex = currentHotbarIndex;
 
         // Check for scrolling forward and backwards
@@ -162,12 +190,19 @@ public class Player : StateMachine<PlayerStates>
 
             try
             {
-                hotbarImages[i].sprite = inventory.Container[i].item.image;
+                hotbarImages[i].sprite = inventory.GetSlot(i).item.sprite;
             }
-            catch { }
+            catch 
+            {
+                hotbarImages[i].sprite = null;
+            }
         }
         // Set the selected slot's color
         playerHotbar.GetComponentsInChildren<Image>()[currentHotbarIndex].color = Color.red;
+
+        //========== Position
+        xPosUi.text = transform.position.x.ToString();
+        yPosUi.text = transform.position.z.ToString();
     }
 
     private void HandleHeldItem(int previousIndex, int currentIndex)
@@ -175,11 +210,10 @@ public class Player : StateMachine<PlayerStates>
         // Update the object at the player
         try
         {
-            // Check if the user has scrolled/changed items
             if (previousIndex != currentIndex)
             {
                 // Get the currently held item
-                ItemObject heldItem = inventory.Container[currentIndex].item;
+                ItemData heldItem = inventory.GetSlot(currentIndex).item;
 
                 // Destroy the current game object
                 Destroy(heldItemObject);
@@ -188,21 +222,20 @@ public class Player : StateMachine<PlayerStates>
                 heldItemObject = Instantiate(heldItem.prefab);
                 heldItemObject.transform.parent = playerHand.transform;
 
+                // Update the rotation and positioning of the object
+                heldItemObject.transform.SetPositionAndRotation(playerHand.transform.position, playerCamera.transform.rotation);
             }
-            // Update the rotation and positioning of the object
-            heldItemObject.transform.SetPositionAndRotation(playerHand.transform.position, playerCamera.transform.rotation);
-
         }
         catch (Exception e)
         {
-            if (heldItemObject)
+            if (heldItemObject && previousIndex != currentIndex)
             {
                 // Remove current object from the hand
                 Destroy(heldItemObject);
             }
 
             // TODO: Error handling
-            //print(e);
+            print(e);
         }
     }
 
@@ -261,19 +294,19 @@ public class Player : StateMachine<PlayerStates>
             {
                 case ("Item"):
                     interactTooltip.text = "Pick up";
-                    if (Input.GetKeyDown(KeyCode.E)) HandleItemPickup(hit.transform.parent.GetComponentInChildren<Item>());
+                    if (Input.GetKeyDown(keyUse)) HandleItemPickup(hit.transform.parent.GetComponentInChildren<Item>());
                     break;
                 case ("Interactable"):
                     interactTooltip.text = "Interact";
-                    if (Input.GetKeyDown(KeyCode.E)) HandleInteract(hit.transform.parent.GetComponentInChildren<IInteractable>());
+                    if (Input.GetKeyDown(keyUse)) HandleInteract(hit.transform.parent.GetComponentInChildren<IInteractable>());
                     break;
                 case ("MissionPhoto"):
                     interactTooltip.text = "Select Mission";
-                    if (Input.GetKeyDown(KeyCode.E)) HandleMissionSelect(hit.transform.parent.gameObject.GetComponentInChildren<PinboardPhoto>().mission);
+                    if (Input.GetKeyDown(keyUse)) HandleMissionSelect(hit.transform.parent.gameObject.GetComponentInChildren<PinboardPhoto>());
                     break;
                 case ("Computer"):
                     interactTooltip.text = "Open Command Line";
-                    if (Input.GetKeyDown(KeyCode.E))
+                    if (Input.GetKeyDown(keyUse))
                     {
                         hit.transform.parent.GetComponent<IInteractable>()?.Interact();
                     }
@@ -311,13 +344,22 @@ public class Player : StateMachine<PlayerStates>
         if (interactable != null) interactable.Interact();
     }
 
-    private void HandleMissionSelect(MissionData mission)
+    private void HandleMissionSelect(PinboardPhoto photo)
     {
-        gameController.mission = mission;
-        SceneManager.LoadScene(mission.scene);
+        // Set the current mission
+        GameController.mission = photo.mission;
+
+        // Remove the mission from the data
+        GameController.contract.missions.Remove(photo.mission);
+
+        // Remove the mission from the board
+        Destroy(photo.gameObject);
+
+        // Load the mission scene
+        SceneManager.LoadScene(photo.mission.scene);
     }
 
-    private void HandleItemInteraction(ItemObject item)
+    private void HandleItemInteraction(ItemData item)
     {
         // Functionality for specific items
         switch (item.itemName)
@@ -337,25 +379,20 @@ public class Player : StateMachine<PlayerStates>
         }
     }
 
-    private void CheckForMouseClick()
+    private void HandleCheckMouseInput()
     {
-        if (Input.GetMouseButtonDown(((int)MouseButton.Left)))
+        if (Input.GetMouseButtonDown(((int)buttonShoot)))
         {
             try
             {
-                if (inventory.Container[currentHotbarIndex] != null)
+                if (inventory.GetSlot(currentHotbarIndex) != null)
                 {
-                    HandleItemInteraction(inventory.Container[currentHotbarIndex].item);
+                    HandleItemInteraction(inventory.GetSlot(currentHotbarIndex).item);
                     print("Used item");
                 }
             } catch (ArgumentOutOfRangeException ex) {
                 //print("No item in that slot");
             }
         }
-    }
-
-    public void OnApplicationQuit()
-    {
-        inventory.Container.Clear();
     }
 }
