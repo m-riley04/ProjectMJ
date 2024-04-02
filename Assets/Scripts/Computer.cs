@@ -14,7 +14,6 @@ public class Computer : MonoBehaviour, IInteractable
     public ScrollView scrollView;
     public TextMeshProUGUI uiInputText;
     public TextMeshProUGUI uiOutputText;
-    public Player player;
 
     List<string> commands = new List<string>
     {
@@ -37,16 +36,16 @@ public class Computer : MonoBehaviour, IInteractable
     void OnLoadCallback(Scene scene, LoadSceneMode sceneMode)
     {
 
-        player = GameObject.FindWithTag("Player").GetComponent<Player>();
+        GameController.player = GameObject.FindWithTag("Player").GetComponent<Player>();
     }
 
     // Update is called once per frame
     void Update()
     {
         // Try to get player
-        if (!player)
+        if (!GameController.player)
         {
-            player = GameObject.FindWithTag("Player").GetComponent<Player>();
+            GameController.player = GameObject.FindWithTag("Player").GetComponent<Player>();
         }
 
         if (isOpen)
@@ -70,10 +69,10 @@ public class Computer : MonoBehaviour, IInteractable
     {
         print("Computer opened");
         isOpen = true;
-        if (player)
+        if (GameController.player)
         {
-            player.canMove = false;
-            player.inUi = true;
+            GameController.player.canMove = false;
+            GameController.player.inUi = true;
         }
         currentOutputText = "Type 'help' to see a list of commands. \n";
         currentInputText = "";
@@ -83,10 +82,10 @@ public class Computer : MonoBehaviour, IInteractable
     public void close()
     {
         isOpen = false;
-        if (player)
+        if (GameController.player)
         {
-            player.canMove = true;
-            player.inUi = false;
+            GameController.player.canMove = true;
+            GameController.player.inUi = false;
         }
         canvasObject.SetActive(false);
     }
