@@ -1,23 +1,39 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Newtonsoft.Json;
 
 [System.Serializable]
 public class ItemData
 {
     public int type;
-    public string id;
+    public int id;
     public string itemName;
     public string description;
     public bool stackable;
+    [JsonIgnore] public Sprite sprite;
+    [JsonIgnore] public GameObject prefab;
 
-    public ItemData(int _type, string _id, string _itemName, string _description, bool _stackable)
+    public ItemData() { }
+    public ItemData(ItemData item)
     {
-        this.type = _type;
-        this.id = _id;
-        this.itemName = _itemName;
-        this.description = _description;
-        this.stackable = _stackable;
+        this.type = item.type;
+        this.id = item.id;
+        this.itemName = item.itemName;
+        this.description = item.description;
+        this.stackable = item.stackable;
+        this.sprite = item.sprite;
+        this.prefab = item.prefab;
     }
+    public ItemData(int type, int id, string itemName, string description, bool stackable, Sprite sprite, GameObject prefab)
+    {
+        this.type = type;
+        this.id = id;
+        this.itemName = itemName;
+        this.description = description;
+        this.stackable = stackable;
+        this.sprite = sprite;
+        this.prefab = prefab;
+    }
+    
 }
