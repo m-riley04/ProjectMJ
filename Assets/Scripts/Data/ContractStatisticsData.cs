@@ -11,7 +11,7 @@ public class ContractStatisticsData
     public int craftsDiscovered;
     public int entitiesDiscovered;
 
-    public ContractStatisticsData(int missionsCompleted, int missionsFailed, int artifactsDiscovered, int craftsDiscovered, int entitiesDiscovered)
+    public ContractStatisticsData(int missionsCompleted=0, int missionsFailed=0, int artifactsDiscovered = 0, int craftsDiscovered = 0, int entitiesDiscovered = 0)
     {
         this.missionsCompleted = missionsCompleted;
         this.missionsFailed = missionsFailed;
