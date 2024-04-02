@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,11 +14,12 @@ public enum ItemType
 public abstract class ItemObject : ScriptableObject
 {
     public ItemType type;
-    public string id;
+    public int id;
     public string itemName;
     [TextArea(15, 20)]
     public string description;
-    public Sprite image;
-    public GameObject prefab;
     public bool stackable;
+    public Sprite sprite;
+    public GameObject prefab;
+
 }
