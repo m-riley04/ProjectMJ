@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Scrap Metal
   m_EditorClassIdentifier: 
   type: 0
-  id: 
+  id: 2
   itemName: Scrap Metal
   description: 
-  image: {fileID: 21300000, guid: f1c13ef5752a2ec4f8fcc1d059e11012, type: 3}
+  sprite: {fileID: 21300000, guid: b2f9adc22d0fa0647880b18b89bf0872, type: 3}
   prefab: {fileID: 1644099164363171146, guid: 95680dc1f55524945a2f9fc0e59e0f50, type: 3}
   stackable: 1
+  condition: 0
   value: 10

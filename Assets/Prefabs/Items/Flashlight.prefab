@@ -355,5 +355,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5924c88d11a60ea46b2467be21b02045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: b23a53e61ff99b644ad2bffa11d5bbaa, type: 2}
+  item:
+    type: 2
+    id: 
+    itemName: 
+    description: 
+    stackable: 0
+  itemTemplate: {fileID: 11400000, guid: b23a53e61ff99b644ad2bffa11d5bbaa, type: 2}
   itemLight: {fileID: 4136189346572763574}
+  itemCamera: {fileID: 0}
+  FileCounter: 0

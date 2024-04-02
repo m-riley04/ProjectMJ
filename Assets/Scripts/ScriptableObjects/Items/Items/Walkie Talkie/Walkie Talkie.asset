@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6fc52e593b310ed49947681d0eb72357, type: 3}
-  m_Name: Flashlight
+  m_Name: Walkie Talkie
   m_EditorClassIdentifier: 
   type: 1
-  id: 
-  itemName: Flashlight
+  id: 3
+  itemName: Walkie Talkie
   description: 
-  image: {fileID: 21300000, guid: 8ceab77c2bae1cb4fa6d58286cb9a491, type: 3}
-  prefab: {fileID: 7204062627746228343, guid: c251c22fc2b24c54d97b4ad82f6297e8, type: 3}
+  sprite: {fileID: 21300000, guid: 8ceab77c2bae1cb4fa6d58286cb9a491, type: 3}
+  prefab: {fileID: 0}
   stackable: 0
   maxBattery: 100
+  on: 0

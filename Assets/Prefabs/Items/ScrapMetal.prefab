@@ -45,8 +45,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5924c88d11a60ea46b2467be21b02045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: a79c89fa66ac5584cb86850ce134f855, type: 2}
+  item:
+    type: 2
+    id: 
+    itemName: 
+    description: 
+    stackable: 0
+  itemTemplate: {fileID: 11400000, guid: a79c89fa66ac5584cb86850ce134f855, type: 2}
   itemLight: {fileID: 0}
+  itemCamera: {fileID: 0}
+  FileCounter: 0
 --- !u!1 &2314791313458713144
 GameObject:
   m_ObjectHideFlags: 0

@@ -4424,6 +4424,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12087ae6c49ac2e41af7392cae649a1f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentPage: 0
   pages:
   - {fileID: 6034727926099901028}
   - {fileID: 6435069786710342448}
@@ -4461,7 +4462,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5924c88d11a60ea46b2467be21b02045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item: {fileID: 11400000, guid: a1face8a51566ae40912129fe5d361bf, type: 2}
+  item:
+    type: 2
+    id: 
+    itemName: 
+    description: 
+    stackable: 0
+  itemTemplate: {fileID: 11400000, guid: a1face8a51566ae40912129fe5d361bf, type: 2}
   itemLight: {fileID: 0}
   itemCamera: {fileID: 0}
   FileCounter: 0
